@@ -1,0 +1,25 @@
+// Deployment of uptime.athas.mx: Workers Free (inline checks, no Queue), Supabase through Hyperdrive.
+// Secrets (BETTER_AUTH_SECRET, CRON_SECRET, DATABASE_URL) live on the Worker and are kept across deploys.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "openuptime-api",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "triggers": { "crons": ["* * * * *"] },
+  "routes": [{ "pattern": "uptime.athas.mx/api/*", "zone_name": "athas.mx" }],
+  "send_email": [{ "name": "EMAIL", "remote": true }],
+  "hyperdrive": [{ "binding": "HYPERDRIVE", "id": "7cbb89ad15504e6e98b342b53996ee4b" }],
+  "placement": { "region": "aws:us-east-1" },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": { "enabled": true, "head_sampling_rate": 1, "persist": true, "invocation_logs": true }
+  },
+  "vars": {
+    "INVITE_TTL_DAYS": "7",
+    "BETTER_AUTH_URL": "https://uptime.athas.mx",
+    "WEB_ORIGIN": "https://uptime.athas.mx",
+    "DISABLE_SIGNUP": "true"
+  }
+}
